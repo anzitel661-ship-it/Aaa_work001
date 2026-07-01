@@ -12,8 +12,7 @@
 #include <WebServer.h>
 
 // ==================== WiFi 配置 ====================
-const char* ssid = "Tel";
-const char* password = "tj1376125";
+const char* ap_ssid = "esp32ex204";
 
 // ==================== 引脚与PWM配置 ====================
 #define LED_PIN     2      // LED引脚 (ESP32 DevKit板载)
@@ -175,16 +174,15 @@ void setup() {
   ledcAttach(LED_PIN, PWM_FREQ, PWM_RESOLUTION);
   ledcWrite(LED_PIN, 0);
 
-  // 连接WiFi
-  WiFi.begin(ssid, password);
-  Serial.print("连接WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("\n连接成功");
+  // ESP32 自建开放 WiFi AP
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(ap_ssid);
+
+  Serial.println("AP 已启动");
+  Serial.print("AP 名称: ");
+  Serial.println(ap_ssid);
   Serial.print("访问地址: http://");
-  Serial.println(WiFi.localIP());
+  Serial.println(WiFi.softAPIP());
 
   // 注册路由
   server.on("/", handleRoot);

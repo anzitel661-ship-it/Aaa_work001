@@ -12,9 +12,8 @@
 #include <WiFi.h>
 #include <WebServer.h>
 
-// ==================== WiFi 配置 ====================
-const char* ssid = "Tel";
-const char* password = "tj1376125";
+// ==================== AP 配置 ====================
+const char* ap_ssid = "esp32ex204";
 
 // ==================== 引脚定义 ====================
 #define TOUCH_PIN  4      // 触摸引脚 T0 (GPIO4)
@@ -221,16 +220,15 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
 
-  // 连接WiFi
-  WiFi.begin(ssid, password);
-  Serial.print("连接WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("\n连接成功");
+  // ESP32 creates its own WiFi AP.
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(ap_ssid);
+
+  Serial.println("AP已启动");
+  Serial.print("AP名称: ");
+  Serial.println(ap_ssid);
   Serial.print("访问地址: http://");
-  Serial.println(WiFi.localIP());
+  Serial.println(WiFi.softAPIP());
 
   // 注册路由
   server.on("/", handleRoot);
